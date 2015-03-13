@@ -1,4 +1,4 @@
 {% set glusterfs = salt['grains.filter_by']({
-    'Debian':    {'glusterfs-server': 'glusterfs-server'},
-    'Ubuntu':    {'glusterfs-server': 'glusterfs-server'},
+    'Ubuntu':    {'package': 'glusterfs-server',
+                  'service': 'glusterfs-server'},
 }, merge=salt['pillar.get']('glusterfs:lookup')) %}
