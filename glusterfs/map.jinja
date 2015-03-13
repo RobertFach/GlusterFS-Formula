@@ -1,0 +1,3 @@
+{% set glusterfs = salt['grains.filter_by']({
+    'Ubuntu':    {'glusterfs-server': 'glusterfs-server'},
+}, merge=salt['pillar.get']('glusterfs:lookup')) %}
