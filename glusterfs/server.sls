@@ -1,10 +1,10 @@
-{% "glusterfs/map.jinja" import salt with context %}
+{% from "glusterfs/map.jinja" import glusterfs with context %}
 
 glusterfs-server:
     pkg.installed:
         - name: {{ glusterfs['glusterfs-server'] }}
     service.running:
         - enable: True
-        - name: {{ salt.get('glusterfs-server-service', 'glusterfs-server') }}
+        - name: {{ glusterfs.get('glusterfs-server-service', 'glusterfs-server') }}
         - watch:
             - pkg: glusterfs-server
