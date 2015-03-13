@@ -2,9 +2,9 @@
 
 glusterfs-server:
     pkg.installed:
-        - name: {{ glusterfs['package'] }}
+        - name: {{ glusterfs.package }}
     service.running:
         - enable: True
-        - name: {{ glusterfs['service'] }}
+        - name: {{ glusterfs.service }}
         - watch:
             - pkg: glusterfs-server
