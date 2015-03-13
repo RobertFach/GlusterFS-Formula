@@ -1,4 +1,4 @@
-{% "glusterfs/map.jinja" import glusterfs with context %}
+{% "glusterfs/map.jinja" import salt with context %}
 
 glusterfs-server:
     pkg.installed:
