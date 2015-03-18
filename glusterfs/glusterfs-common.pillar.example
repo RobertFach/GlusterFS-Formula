@@ -1,0 +1,10 @@
+glusterfs:
+    lookup:
+       brickpath: /opt/vm-data/glusterfs/brick0
+       volumename: repl-volume
+       startvolume: True
+       replicas: 2
+       mountpoint: /mnt/replicated-volume
+       peers:
+           - host1-fqdn
+           - host2-fqdn

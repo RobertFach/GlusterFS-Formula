@@ -1,8 +1,10 @@
 {% from 'glusterfs/map.jinja' import glusterfs with context %}
 
-{% set brick_path = salt['pillar.get']('glusterfs:lookup:brick_path') %}
-{% set host1 = salt['pillar.get']('glusterfs:lookup:host1') %}
-{% set host2 = salt['pillar.get']('glusterfs:lookup:host2') %}
+{% set brickpath = salt['pillar.get']('glusterfs:lookup:brickpath', '/export/gluster/brick0') %}
+{% set peers = salt['pillar.get']('glusterfs:lookup:peers', []) %}
+{% set volumename = salt['pillar.get']('glusterfs:lookup:volumename', 'myvolume') %}
+{% set startvolume = salt['pillar.get']('glusterfs:lookup:startvolume', False) %}
+{% set replicas = salt['pillar.get']('glusterfs:lookup:replicas', 0) %}
 
 glusterfs-server:
     pkg.installed:
@@ -13,16 +15,34 @@ glusterfs-server:
         - watch:
             - pkg: glusterfs-server
 
+attr:
+    pkg.installed
 
-{{ brick_path }}:
+{{ brickpath }}:
     file.directory:
         - user: root
         - group: root
+        - makedirs: True
 
-{% if salt['pillar.get']('glusterfs:lookup:role') == 'primary' %}
-myvolume:
+{% if salt['pillar.get']('glusterfs:lookup:role') == 'primary' and peers|length() > 0 %}
+
+peer clusterfs nodes:
+    glusterfs.peered:
+        - names:
+          {% for peer in peers %}
+          - {{ peer }}
+          {% endfor %}
+
+{{ volumename }}:
     glusterfs.created:
         - bricks:
-            - {{ host1 }}:{{ brick_path }}
-            - {{ host2 }}:{{ brick_path }}
+            {% for peer in peers %}
+            - {{ peer }}:{{ brickpath }}
+            {% endfor %}
+        - start: {{ startvolume }}
+        {% if replicas > 0 %}
+        - replica: {{ replicas }}
+        {% endif %}
+
 {% endif %}
+
